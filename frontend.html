@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Sorter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>String Sorter</h1>
+        
+        <div class="form-group">
+            <label for="inputString">Enter a string to sort:</label>
+            <input type="text" id="inputString" placeholder="e.g., example" required>
+            <button onclick="sortString()">Sort String</button>
+        </div>
+
+        <div class="form-group">
+            <h3>Test Webhook Integration</h3>
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" placeholder="your.email@example.com" required>
+            <label for="apiUrl">API Endpoint URL:</label>
+            <input type="url" id="apiUrl" placeholder="https://your-api-url.vercel.app/sort-string" required>
+            <button onclick="testWebhook()">Test Webhook</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function sortString() {
+            const inputString = document.getElementById('inputString').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!inputString) {
+                resultDiv.textContent = 'Please enter a string to sort.';
+                return;
+            }
+
+            try {
+                const response = await fetch('/sort-string', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ data: inputString }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    resultDiv.textContent = `Sorted characters: ${JSON.stringify(data.word)}`;
+                } else {
+                    resultDiv.textContent = `Error: ${data.error || 'Unknown error occurred'}`;
+                }
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function testWebhook() {
+            const email = document.getElementById('email').value;
+            const apiUrl = document.getElementById('apiUrl').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!email || !apiUrl) {
+                resultDiv.textContent = 'Please fill in all fields.';
+                return;
+            }
+
+            const testUrl = `https://yhxzjyykdsfkdrmdxgho.supabase.co/functions/v1/junior-dev?url=${encodeURIComponent(apiUrl)}&email=${encodeURIComponent(email)}`;
+            
+            window.open(testUrl, '_blank');
+            resultDiv.textContent = `Test initiated. Check your email (${email}) for results.`;
+        }
+    </script>
+</body>
+</html>

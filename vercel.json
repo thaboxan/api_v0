@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/sort-string.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/sort-string", "dest": "/api/sort-string" },
+    { "src": "/(.*)", "dest": "/public/$1" }
+  ]
+}
